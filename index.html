@@ -1,0 +1,120 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Rushikesh: Astronomy Picture Of The Day Image Viewer</title>
+	<link rel="stylesheet" href="themes/apod.min.css" />
+	<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+	<link rel="stylesheet" href="themes/jquery.mobile.structure-1.4.2.min.css" />
+	<script src="themes/jquery-1.10.2.min.js"></script>
+	<script src="themes/jquery.mobile-1.4.2.min.js"></script>
+	<script src="themes/apod.js"></script>
+
+	<style type="text/css">
+		.content{
+			background-color: #000000;
+		}
+		.ui-listview>li h5{
+/* 			overflow: auto !important;
+white-space: normal; */
+		}
+		#loadMore{
+			top:18px;
+		}
+		#content2{
+/* 			background: url(themes/images/ajax-loader.gif) no-repeat center center fixed; 
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover; */
+		}
+		#content2 img, #content2 object{
+			max-width: 100%;
+			max-height: 100%;
+		}
+		.apodThumb img{
+			width:80px;
+			height:80px;
+		}
+	</style>
+
+	<script type="text/javascript">
+	    var start=0,end=25;
+		$(document).ready(function(){
+			populateData();
+		});
+
+		$(document).on('click','#loadMore',function(e){
+			populateData();
+		});
+
+		$(document).on('tap','.apodThumb',function(){
+			showImagePg($(this));
+		});
+
+		function showImagePg(obj){
+			var o = hData[$(obj).attr('id')];
+			$('#imgTitle').html(o.t);
+			var tmp = o.i.replace('-thumb','').replace('.jpg','').replace('.gif','');
+			var imgSrc = hrImg1 + tmp + hrImg2;
+			$('#imgInfo').html(o.t);
+			$('#content2').html('<img src="themes/images/ajax-loader.gif" />');
+			//$('#content2').css('background-image', 'url(themes/images/ajax-loader.gif)');
+			$("<img/>").attr("src", imgSrc).load(function(){
+				//$('#content2').css('background-image', 'url(' + imgSrc + ')');
+				$('#content2').html('<img src="'+imgSrc+'" />');
+			});
+			$.mobile.navigate("#imgPage", { transition: "slide" });
+		}
+
+		function populateData(){
+			var s = "";
+			for(var i=start;i<end;i++){
+				s += '<li><a href="#" class="apodThumb" id="'+i+'"><img src="themes/images/apodThumbs/S_'+apod[i].l+'.jpg" /><h5>'+apod[i].t+'</h5></a></li>'
+			}
+			start = end+1;
+			end = end + 25;
+			$('#apodList').append(s);
+			if($('#apodList').length){
+				$('#apodList').listview("refresh");
+			}
+		}
+	</script>
+</head>
+<body>
+	<div data-role="page" data-theme="a">
+		<div data-role="header" data-position="inline">
+			<h1>APOD Image Viewer</h1>
+			<a href="#popupBasic" data-position-to="window" data-transition="fade" data-rel="popup" id="infoicon" data-icon="info" class="ui-btn-right" data-iconpos="notext">Info</a>
+		</div>
+		<div data-role="content" data-theme="a" class="content">
+			<ul data-role="listview" id="apodList">
+
+			</ul>
+			<a href="#" data-role="button" id="loadMore">Load More</a>
+		</div>
+		<div data-role="popup" id="popupBasic" data-overlay-theme="a" class="ui-content" >
+	    	<a href="#" data-rel="back" data-role="button" data-theme="c" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				<p>Astrononmy Picture Of The Day (APOD) Image Viewer.<p>
+				<p>All images and associated data are from <a href='http://www.nasa.gov/'>Nasa</a></p>
+				<p>Created By: <a href="http://www.rushis.com">Rushi</a><p>
+		</div>		
+	</div>
+
+	<!-- Start of second page -->
+	<div data-role="page" id="imgPage" class="cstmPage">
+		<div data-role="header" data-position="fixed">
+			<a href="#" data-rel="back" data-icon="arrow-l" data-role="button" data-theme="a" data-transition="slideUp" data-iconpos="notext">Back</a>
+			<a href="#popupImageInfo" data-position-to="window" data-transition="fade" data-rel="popup" id="infoicon" data-icon="info" class="ui-btn-right" data-iconpos="notext">Info</a>
+			<h1 id="imgTitle"></h1>
+		</div>
+		<div data-role="content" id="content2">
+			
+		</div>
+		<div data-role="popup" id="popupImageInfo" data-overlay-theme="a" class="ui-content" >
+	    	<a href="#" data-rel="back" data-role="button" data-theme="c" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+	    	<p id='imgInfo'></p>
+		</div>
+	</div>
+</body>
+</html>
