@@ -77,13 +77,16 @@ top:3em; */
 				s += "<option value="+(i+1)+">"+mnth[i]+"</option>";
 			}
 			$('#month').append(s);
-			var currYear = 1900 + new Date().getYear();
+			var dt = new Date();
+			var currMnth = dt.getMonth()+1;
+			var currYear = 1900 + dt.getYear();
 			s = "";
 			for(var i=startYear;i<=currYear;i++){
 				s += "<option value="+i+">"+i+"</option>";
 			}
-
 			$('#year').append(s);
+			$('#month').val(currMnth).change();
+			$('#year').val(currYear).change();
 		}
 
 
