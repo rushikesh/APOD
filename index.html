@@ -18,9 +18,6 @@
 /* 			overflow: auto !important;
 white-space: normal; */
 		}
-		#loadMore{
-			top:18px;
-		}
 		#content2{
 /* 			background: url(themes/images/ajax-loader.gif) no-repeat center center fixed; 
 		  -webkit-background-size: cover;
@@ -36,21 +33,59 @@ white-space: normal; */
 			width:80px;
 			height:80px;
 		}
+		.ui-select{
+/* 			position:fixed;
+top:3em; */
+			width:48%;
+			display:inline-block;
+		}
+		.inp{
+			position:fixed;
+			margin: 0 auto;
+			text-align: center;
+			width:96%;
+			background-color: black;
+			z-index:100;
+			top:2.5em;
+			left:2%;
+		}
+		#apodList{
+			position:fixed;
+			overflow: auto;
+			width: 100%;
+			height: 100%;
+			top:7.3em;
+		}
 	</style>
 
 	<script type="text/javascript">
-	    var start=0,end=25;
+	    var start=0,end=25, phGpPath="", filePath="", startYear=1995;
+	    var mnth=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 		$(document).ready(function(){
+			populateMnthYear();
 			populateData();
-		});
-
-		$(document).on('click','#loadMore',function(e){
-			populateData();
+			//filePath = getPhoneGapPath() + "themes/images/apodThumbs" ;
 		});
 
 		$(document).on('tap','.apodThumb',function(){
 			showImagePg($(this));
 		});
+
+		function populateMnthYear(){
+			var s= "";
+			for(var i=0;i<12;i++){
+				s += "<option value="+(i+1)+">"+mnth[i]+"</option>";
+			}
+			$('#month').append(s);
+			var currYear = 1900 + new Date().getYear();
+			s = "";
+			for(var i=startYear;i<=currYear;i++){
+				s += "<option value="+i+">"+i+"</option>";
+			}
+
+			$('#year').append(s);
+		}
+
 
 		function showImagePg(obj){
 			var o = hData[$(obj).attr('id')];
@@ -79,19 +114,68 @@ white-space: normal; */
 				$('#apodList').listview("refresh");
 			}
 		}
+
+		
+		function getPhoneGapPath() {
+			if(phGpPath==""){
+				var path = window.location.pathname;
+			    path = path.substr( path, path.length - 10 );
+			    phGpPath =  'file://' + path;
+			}
+		    return phGpPath;
+		};
+
+		function downloadApodImagesOfMonth(){
+
+
+		}
+
+		function downloadApodImage(imgUrl){
+			// !! Assumes filePath is a valid path on the device
+			var fileTransfer = new FileTransfer();
+			var uri = encodeURI(imgUrl);
+
+			fileTransfer.download(
+			    uri,
+			    filePath,
+			    function(entry) {
+			        /*console.log("download complete: " + entry.fullPath);*/
+			    },
+			    function(error) {
+			        /*console.log("download error source " + error.source);
+			        console.log("download error target " + error.target);
+			        console.log("upload error code" + error.code);*/
+			    },
+			    true/*,
+			    {
+			        headers: {
+			            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
+			        }
+			    }*/
+			);
+		}
+
 	</script>
 </head>
 <body>
 	<div data-role="page" data-theme="a">
-		<div data-role="header" data-position="inline">
+		<div data-role="header" data-position="fixed">
 			<h1>APOD Image Viewer</h1>
 			<a href="#popupBasic" data-position-to="window" data-transition="fade" data-rel="popup" id="infoicon" data-icon="info" class="ui-btn-right" data-iconpos="notext">Info</a>
 		</div>
 		<div data-role="content" data-theme="a" class="content">
+		    <div class="inp">
+		    	<select id="month">
+
+		    	</select>
+		    	<select id="year">
+		    		
+		    	</select>
+		    </div>
 			<ul data-role="listview" id="apodList">
 
 			</ul>
-			<a href="#" data-role="button" id="loadMore">Load More</a>
+			
 		</div>
 		<div data-role="popup" id="popupBasic" data-overlay-theme="a" class="ui-content" >
 	    	<a href="#" data-rel="back" data-role="button" data-theme="c" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
